@@ -22,4 +22,4 @@ du moteur OpenGL (en ses versions 1 et 2).
 TODO :
 
 - faire un vrai pilote automatique (pour le moment l'implantation est
-  naïve et inefficace
+  naïve et inefficace)
