@@ -165,6 +165,24 @@ void camLeve(camCamera * camera, float dep) {
 void camTourneEtLeve(camCamera * camera, float depTourne, float depLeve) {
   camTourne(camera, depTourne);
   camLeve(camera, depLeve);
+  
+  //Normalisation de forward
+  float norme = sqrt(pow(camera->forward.x, 2)
+                   + pow(camera->forward.y, 2)
+                   + pow(camera->forward.z, 2));
+                     
+  camera->forward.x /= norme;
+  camera->forward.y /= norme;
+  camera->forward.z /= norme;
+  
+  //Normalisation de up
+  norme = sqrt(pow(camera->up.x, 2)
+                + pow(camera->up.y, 2)
+                + pow(camera->up.z, 2));
+  
+  camera->up.x /= norme;
+  camera->up.y /= norme;
+  camera->up.z /= norme;
 }
 
 /**

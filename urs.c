@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
   initSpace(&spaceSphere, 0, 0, -100, 60000000, 90, 100, textures, 8);
   
   gu_initTextures(&textures, 1, 0, "blueMap.jpg");
-  initPlanet(&planet2, 100000, 0, 800000, 30000, 90, -25, .002, 50, textures);
+  initPlanet(&planet2, 100000, 0, 800000, 30000, 90, -25, .002, 0, textures);
   
   gu_initTextures(&textures, 1, 0, "snowyMap.png");
   initPlanet(&planet1, 0, 0, 1000000, 3000, 90, -25, .005, 0, textures);
