@@ -10,6 +10,7 @@ l'origine le seul fichier, destiné à tester les fonctionnalités d'OpenGL.**
 ------------------------------------------------------------------------
 
 Projet d'infographie (L3 Informatique) : University of Rouen Starship
+
 Auteurs :
 - Tristan LOUET <tristan.louet@etu.univ-rouen.fr>
 - Gaëtan FERRY <gaetan.ferry@etu.univ-rouen.fr>
