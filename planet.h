@@ -15,16 +15,16 @@ typedef struct PLANET {
   float rotation;
   GLint shininess;
   GLuint textureDesc;
-} planet;
+} planet_t;
 
-void initPlanet(planet *p, float x, float y, float z, float rad,
+void initPlanet(planet_t *p, float x, float y, float z, float rad,
                            float xAngle, float yAngle, float rotSpeed,
                            GLint shininess, GLuint texture);
 
-void movePlanet(planet *p, float x, float y, float z);
+void movePlanet(planet_t *p, float x, float y, float z);
 
-void drawPlanet(planet *p);
+void drawPlanet(planet_t *p);
 
-int goToPlanet(planet *p, camCamera *cam, float speed);
+int goToPlanet(planet_t *p, camCamera *cam, float speed);
 
 #endif

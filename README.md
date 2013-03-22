@@ -2,10 +2,9 @@ URSProject
 ==========
 
 
-**Développement encore en cours, de grands changements sont à prévoir,
-notamment dans l'architecture logicielle (l'architecture courante ayant
-été fortuitement construite autour du fichier test.c qui était à
-l'origine le seul fichier, destiné à tester les fonctionnalités d'OpenGL.**
+**Développement encore en cours.
+Le projet est destiné à tester les fonctionnalités d'OpenGL en effectuant
+une démonstration**
 
 ------------------------------------------------------------------------
 

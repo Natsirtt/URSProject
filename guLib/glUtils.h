@@ -4,6 +4,12 @@
 #include <SDL/SDL.h>
 #include <GL/gl.h>
 
+typedef struct {
+  float x;
+  float y;
+  float z;
+} vector_t;
+
 /**
  * Quitte le programme en terminant correctement la SDL et en renvoyant un EXIT_FAILURE.
  */
@@ -83,5 +89,10 @@ void gu_yRotate(float a);
  * Fait une roation d'angle a sur l'axe des z.
  */
 void gu_zRotate(float a);
+
+/**
+ * Calcul le produit scalaire de v2 et le range dans le buffer.
+ */
+void gu_normal(vector_t *vBuff, vector_t v1, vector_t v2, vector_t v3);
 
 #endif

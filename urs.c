@@ -18,10 +18,10 @@
 
 keyBinder kb;
 camCamera camera;
-planet planet1;
-planet planet2;
-planet moon;
-planet autoPilotTarget;
+planet_t planet1;
+planet_t planet2;
+planet_t moon;
+planet_t autoPilotTarget;
 space_t spaceSphere;
 sun_t sun;
 int autoPilot = 0;
@@ -97,19 +97,13 @@ void activeAutoPilot() {
 }
 
 void doAutoPilot() {
-  autoPilot = goToPlanet(&moon, &camera, vitesse);
+  //autoPilot = goToPlanet(...);
 }
 
 void display() {
   GLfloat lightPos[4] = {sun.x, sun.y, sun.z, 1};
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
   
-  
-  if (autoPilot) {
-    if (vitesse <= 500.) {
-      accelerate();
-    }
-  }
   moveSpace(&spaceSphere, camera.eye.x, camera.eye.y, camera.eye.z);
   drawSpace(&spaceSphere);
   drawPlanet(&planet1);
@@ -162,7 +156,7 @@ void eventCatcher(SDL_Event *event) {
 }
 
 int main(int argc, char *argv[]) {
-  SDL_Surface *surface = gu_init_SDL("Projet tests");
+  SDL_Surface *surface = gu_init_SDL("URS - University of Rouen Starship");
   gu_init_GL();
   gu_init_display(display);
   
@@ -197,7 +191,7 @@ int main(int argc, char *argv[]) {
   
   GLuint textures;
   gu_initTextures(&textures, 1, 1, "space.png");
-  initSpace(&spaceSphere, 0, 0, -100, 60000000, 90, 100, textures, 8);
+  initSpace(&spaceSphere, 0, 0, -100, 10, 90, 100, textures, 10);
   
   gu_initTextures(&textures, 1, 0, "blueMap.jpg");
   initPlanet(&planet2, 100000, 0, 800000, 30000, 90, -25, .002, 0, textures);

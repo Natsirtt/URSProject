@@ -5,6 +5,8 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
+#include "glUtils.h"
+
 #define BUFF_LENGTH 4096
 
 //La fonction de display, appelée en far-call
@@ -25,6 +27,7 @@ void gu_SDLQuit(int exitSuccess) {
 void gu_initLights() {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
+  //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 }
 
 /**
@@ -57,9 +60,9 @@ SDL_Surface *gu_init_SDL(const char *title) {
  */
 void gu_init_GL(void) {
 	glClearColor(0., 0., 0., 0.);
-  //glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_TEXTURE_2D);
+  glEnable(GL_CULL_FACE);
   
   glMatrixMode(GL_MODELVIEW);
 }
@@ -173,11 +176,13 @@ void _gu_bindTexture(GLuint texture, const char *path, int repeat) {
     // i.e. comment on calcule les coordonnées pixels -> texels.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, /*GL_NEAREST*/ GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, /*GL_NEAREST*/ GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+    
     if (repeat) {
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     }
-
+    
     // On charge l'image qui va nous servir de texture via la SDL
     SDL_Surface *image;
     image = IMG_Load(path);
@@ -195,15 +200,20 @@ void _gu_bindTexture(GLuint texture, const char *path, int repeat) {
     if (image->format->BytesPerPixel == 3) {
       // L'image d'origine n'a que trois composantes
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+      //gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, image->w, image->h, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
     } else if (image->format->BytesPerPixel == 4) {
       // L'image d'origine à quatre composantes
       // (la dernière est le paramètre alpha qui va nous servir à gérer la transparence)
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->w, image->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
+      //gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, image->w, image->h, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
+      /*if (res != 0) {
+          
+      }*/
     } else {
       fprintf(stderr, "Nombre de composants de l'image différent de 3 et 4\n");
       exit(EXIT_FAILURE);
     }
-
+    
     // On libère les ressources occupées par l'image
     if (SDL_MUSTLOCK(image)) {
         SDL_UnlockSurface(image);
@@ -261,4 +271,20 @@ void gu_yRotate(float a) {
  */
 void gu_zRotate(float a) {
   glRotatef(a, 0., 0., 1.);
+}
+
+void gu_normal(vector_t *vBuff, vector_t v1, vector_t v2, vector_t v3) {
+  vector_t u;
+  u.x = v1.x - v2.x;
+  u.y = v1.y - v2.y;
+  u.z = v1.z - v2.z;
+  
+  vector_t v;
+  v.x = v3.x - v2.x;
+  v.y = v3.y - v2.y;
+  v.z = v3.z - v2.z;
+  
+  vBuff->x = u.y * v.z - u.z * v.y;
+  vBuff->y = u.z * v.x - u.x * v.z;
+  vBuff->z = u.x * v.y - u.y * v.x;
 }

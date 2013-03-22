@@ -5,10 +5,18 @@ typedef struct {
   float x;
   float y;
   float z;
-} ship;
+  float xRotation;
+  float yRotation;
+  float zRotation;
+  float vertices[23][4];
+} ship_t;
 
-void shipSetPosition(ship *s, float x, float y, float z);
+void initShip(ship_t *s, float x, float y, float z);
 
-void shipDraw(ship *s);
+void setShipPosition(ship_t* s, float x, float y, float z);
+
+void drawShip(ship_t *s);
+
+void rotateShip(ship_t *s, float x, float y, float z);
 
 #endif

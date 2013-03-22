@@ -5,9 +5,12 @@ LIBS_SDL=-lSDL_image `sdl-config --libs`
 CFLAGS=--std=c99 -Wall
 CFLAGS_SDL=`sdl-config --cflags` -Wall
 
-all: urs
+all: urs shipViewer
 
 urs: urs.o planet.o sun.o space.o ship.o guLib/sdlKeyUtils.o guLib/glUtils.o guLib/intList.o guLib/fblList.o guLib/camera.o
+	$(GCC) -o $@ $^ $(LIBS_SDL) $(LIBS)
+
+shipViewer: shipViewer.o sun.o space.o ship.o guLib/sdlKeyUtils.o guLib/glUtils.o guLib/intList.o guLib/fblList.o guLib/camera.o
 	$(GCC) -o $@ $^ $(LIBS_SDL) $(LIBS)
 
 tests.o: tests.c guLib/sdlKeyUtils.h guLib/glUtils.h guLib/camera.h

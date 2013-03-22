@@ -6,7 +6,7 @@
 #include <GL/glu.h>
 #include <math.h>
 
-void initPlanet(planet *p, float x, float y, float z, float rad,
+void initPlanet(planet_t *p, float x, float y, float z, float rad,
                            float xAngle, float yAngle, float rotSpeed,
                            GLint shininess, GLuint texture) {
   p->x = x;
@@ -20,15 +20,15 @@ void initPlanet(planet *p, float x, float y, float z, float rad,
   p->shininess = shininess;
 }
 
-void _planetCycle(planet *p) {
+void __planetCycle(planet_t *p) {
   p->rotation += p->rotationSpeed;
   if (p->rotation >= 360) {
     p->rotation = 0;
   }
 }
 
-void drawPlanet(planet *p) {
-  _planetCycle(p);
+void drawPlanet(planet_t *p) {
+  __planetCycle(p);
   
   glPushMatrix();
   //glLoadIdentity();
@@ -38,6 +38,7 @@ void drawPlanet(planet *p) {
   gu_xRotate(p->xAngle);
   gu_yRotate(p->yAngle);
   gu_zRotate(p->rotation);
+  
   
   glBindTexture(GL_TEXTURE_2D, p->textureDesc);
   
@@ -67,75 +68,16 @@ void drawPlanet(planet *p) {
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void movePlanet(planet *p, float x, float y, float z) {
+void movePlanet(planet_t *p, float x, float y, float z) {
   p->x = x;
   p->y = y;
   p->z = z;
 }
 
-float _sqr(float x) {
+float __sqr(float x) {
   return x * x;
 }
 
-float distanceToPlanet(planet *p, float x, float y, float z) {
-  return sqrt(_sqr(p->x - x) + _sqr(p->y - y) + _sqr(p->z - z));
-}
-
-int goToPlanet(planet *p, camCamera *cam, float speed) {
-  camVector newVector;
-  newVector.x = cam->eye.x;
-  newVector.y = cam->eye.y;
-  newVector.z = cam->eye.z;
-  
-  camVector newLookingVector;
-  newLookingVector.x = cam->forward.x;
-  newLookingVector.y = cam->forward.y;
-  newLookingVector.z = cam->forward.z;
-  
-  //Regard
-  if (p->x <= newLookingVector.x) {
-    newLookingVector.x += cam->sensibilite;
-  } else if (p->x >= newLookingVector.x) {
-    newLookingVector.x -= cam->sensibilite;
-  }
-  
-  if (p->y <= newLookingVector.y) {
-    newLookingVector.y += cam->sensibilite;
-  } else if (p->y >= newLookingVector.y) {
-    newLookingVector.y -= cam->sensibilite;
-  }
-  
-  if (p->z <= newLookingVector.z) {
-    newLookingVector.z += cam->sensibilite;
-  } else if (p->z >= newLookingVector.z) {
-    newLookingVector.z -= cam->sensibilite;
-  }
-  
-  //Déplacement
-  if (p->x > newVector.x) {
-    newVector.x += speed;
-  } else if (p->x < newVector.x) {
-    newVector.x -= speed;
-  }
-  
-  if (p->y > newVector.y) {
-    newVector.y += speed;
-  } else if (p->y < newVector.y) {
-    newVector.y -= speed;
-  }
-  
-  if (p->z > newVector.z) {
-    newVector.z += speed;
-  } else if (p->z < newVector.z) {
-    newVector.z -= speed;
-  }
-  
-  camFixePositionWithoutUp(cam, newVector.x, newVector.y, newVector.z,
-                           newLookingVector.x, newLookingVector.y, newLookingVector.z);
-  camLookAt(cam);
-  
-  if (distanceToPlanet(p, newVector.x, newVector.y, newVector.z) <= p->radius + 1000) {
-    return 0;
-  }
-  return 1;
+float distanceToPlanet(planet_t *p, float x, float y, float z) {
+  return sqrt(__sqr(p->x - x) + __sqr(p->y - y) + __sqr(p->z - z));
 }
