@@ -8,7 +8,8 @@ typedef struct {
   float xRotation;
   float yRotation;
   float zRotation;
-  float vertices[23][4];
+  float vertices[23][3];
+  float normals[23][3];
 } ship_t;
 
 void initShip(ship_t *s, float x, float y, float z);

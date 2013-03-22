@@ -17,8 +17,8 @@ keyBinder kb;
 camCamera camera;
 int continuer = 0;
 int doMotion = 0;
-int speed = 5;
-float rotSpeed = 20.;
+float speed = 5.;
+float rotSpeed = 2.;
 //Acteurs
 space_t space;
 ship_t ship;
@@ -60,7 +60,7 @@ void right() {
 }
 
 void rotateUp() {
-  rotateShip(&ship, rotSpeed, 0., 0.);
+  rotateShip(&ship, -rotSpeed, 0., 0.);
 }
 
 void rotateDown() {
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
   glLightfv(GL_LIGHT0, GL_SPECULAR, whiteLight);
 
   glMatrixMode(GL_PROJECTION);
-  gluPerspective(50, (float) surface->w / surface->h, 4, 10000);
+  gluPerspective(50, (float) surface->w / surface->h, 1, 10000);
   glMatrixMode(GL_MODELVIEW);
   reinitCam();
 
