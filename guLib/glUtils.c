@@ -4,6 +4,7 @@
 #include <SDL/SDL_image.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
+#include <math.h>
 
 #include "glUtils.h"
 
@@ -287,4 +288,15 @@ void gu_normal(vector_t *vBuff, vector_t v1, vector_t v2, vector_t v3) {
   vBuff->x = u.y * v.z - u.z * v.y;
   vBuff->y = u.z * v.x - u.x * v.z;
   vBuff->z = u.x * v.y - u.y * v.x;
+}
+
+float __gu_sqr(float x) {
+  return x * x;
+}
+
+void gu_normalizeVector(vector_t *v) {
+  float norm = sqrt(__gu_sqr(v->x) + __gu_sqr(v->y) + __gu_sqr(v->z));
+  v->x = v->x / norm;
+  v->y = v->y / norm;
+  v->z = v->z / norm;
 }

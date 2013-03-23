@@ -1,6 +1,10 @@
 #ifndef SHIP
 #define SHIP
 
+#include <GL/gl.h>
+
+#define VERTICES_NB 31
+
 typedef struct {
   float x;
   float y;
@@ -8,8 +12,10 @@ typedef struct {
   float xRotation;
   float yRotation;
   float zRotation;
-  float vertices[23][3];
-  float normals[23][3];
+  float vertices[VERTICES_NB][3];
+  GLuint glassTex;
+  GLuint alumTex;
+  //float normals[23][3];
 } ship_t;
 
 void initShip(ship_t *s, float x, float y, float z);

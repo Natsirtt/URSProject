@@ -95,4 +95,9 @@ void gu_zRotate(float a);
  */
 void gu_normal(vector_t *vBuff, vector_t v1, vector_t v2, vector_t v3);
 
+/**
+ * Normalise le vecteur.
+ */
+void gu_normalizeVector(vector_t *v);
+
 #endif

@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
   initSun(&sun, 0, 30, 30, 3, 0, 0, 0, 0);
   GLuint texDesc;
   gu_initTextures(&texDesc, 1, 1, "space.png");
-  initSpace(&space, 0, 0, 0, 10, 0, 0, 0, 10);
+  initSpace(&space, 0, 0, 0, 10, 0, 0, texDesc, 10);
 
   continuer = 1;
   SDL_Event event;
