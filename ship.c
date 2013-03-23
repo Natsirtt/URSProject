@@ -188,7 +188,7 @@ void __shipDrawPolygon(ship_t *s, int totalVertexNb, int v1, int v2, int v3, ...
 }
 
 void drawShip(ship_t *s) {
-  glDisable(GL_CULL_FACE);
+  //glDisable(GL_CULL_FACE);
   glPushMatrix();
   glTranslatef(s->x, s->y, s->z);
   glRotatef(s->xRotation, 1., 0., 0.);
@@ -235,7 +235,10 @@ void drawShip(ship_t *s) {
   __shipDrawTriangle(s, J, K, I, .5, 1., .0, .0, .5, .0);
   //Bas
   //__shipDrawPolygon(s, 7, O, G, E, H, N, P, Q);
-  __shipDrawPolygon(s, 8, O2, G2, B, A, H2, N2, P2, Q2);
+  //__shipDrawPolygon(s, 8, O2, G2, B, A, H2, N2, P2, Q2);
+  __shipDrawQuad(s, A, H2, N2, P2, .0, .0, 1., .0, 1., 1., .0, 1.);
+  __shipDrawQuad(s, B, Q2, O2, G2, .0, .0, 1., .0, 1., 1., .0, 1.);
+  __shipDrawQuad(s, A, P2, Q2, B, .0, .0, 1., .0, 1., 1., .0, 1.);
 
   //Cotés
   __shipDrawQuad(s, H, I, L, N, .0, .0, 1., .0, 1., 1., .0, 1.);
@@ -269,7 +272,7 @@ void drawShip(ship_t *s) {
   __shipDrawTriangle(s, S, B, G2, .0, .0, 1., .0, 1., 1.);
 
 
-  glEnable(GL_CULL_FACE);
+  //glEnable(GL_CULL_FACE);
   glPopMatrix();
 }
 
