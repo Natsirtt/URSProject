@@ -28,6 +28,7 @@
 #define U 20
 #define V 21
 #define W 22
+// 2 : le "sol" du vaisseau
 #define C2 23
 #define D2 24
 #define H2 25
@@ -36,6 +37,15 @@
 #define Q2 28
 #define O2 29
 #define G2 30
+//3 : les ailerettes du vaisseau
+#define M3_1 31
+#define M3_2 32
+#define M3_1_HIGH 33
+#define M3_2_HIGH 34
+#define M3_3 35
+#define M3_3_HIGH 36
+#define M3_4 37
+#define M3_4_HIGH 38
 
 void __shipSetVertex(ship_t *s, int vertex, float x, float y, float z) {
   s->vertices[vertex][0] = x;
@@ -61,6 +71,10 @@ void __shipModelize(ship_t *s) {
   __shipSetVertex(s, K, 1.75, 2., 1.5); /*K*/
   __shipSetVertex(s, L, -4., -2, 1.5); /*L*/
   __shipSetVertex(s, M, -4., 2., 1.5); /*M*/
+  __shipSetVertex(s, M3_1, -3.5, 1., 1.5);
+  __shipSetVertex(s, M3_1_HIGH, -5.2, 1.5, 3.2);
+  __shipSetVertex(s, M3_2, -1., 1., 1.5);
+  __shipSetVertex(s, M3_2_HIGH, -3., 1.5, 3.2);
   __shipSetVertex(s, N, -5.5, -2.5, .5); /*N*/
   __shipSetVertex(s, N2, -5.5, -2.5, 0.); /*N2*/
   __shipSetVertex(s, O, -5.5, 2.5, .5); /*O*/
@@ -257,7 +271,7 @@ void drawShip(ship_t *s) {
   __shipDrawTriangle(s, G, S, G2, .0, .0, 1., .0, 1., 1.);
   __shipDrawTriangle(s, R, H, H2, .0, .0, 1., .0, 1., 1.);
   __shipDrawTriangle(s, T, H2, H, .0, .0, 1., .0, 1., 1.);
-          
+
   //Ailes
   __shipDrawTriangle(s, R, A, D, .0, .0, 1., .0, 1., 1.);
   __shipDrawTriangle(s, R, D, H, .0, .0, 1., .0, 1., 1.);
@@ -271,6 +285,8 @@ void drawShip(ship_t *s) {
   __shipDrawQuad(s, U, G2, O2, W, .0, .0, 1., .0, 1., 1., .0, 1.);
   __shipDrawTriangle(s, S, B, G2, .0, .0, 1., .0, 1., 1.);
 
+  //Ailerettes
+  __shipDrawQuad(s, M3_1, M3_2, M3_2_HIGH, M3_1_HIGH, .0, .0, 1., .0, 1., 1., .0, 1.);
 
   //glEnable(GL_CULL_FACE);
   glPopMatrix();

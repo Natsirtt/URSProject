@@ -3,7 +3,7 @@
 
 #include <GL/gl.h>
 
-#define VERTICES_NB 31
+#define VERTICES_NB 39
 
 typedef struct {
   float x;

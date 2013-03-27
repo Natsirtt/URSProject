@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include <GL/glu.h>
 
 #include "guLib/glUtils.h"
@@ -13,12 +14,17 @@
 #include "sun.h"
 #include "space.h"
 
+#define SHORT_BUFF_LENGTH 64
+
 keyBinder kb;
 camCamera camera;
 int continuer = 0;
 int doMotion = 0;
 float speed = 5.;
 float rotSpeed = 2.;
+TTF_Font *fpsFont;
+SDL_Color fpsFontColor = {1, 1, 1};
+SDL_Surface *fpsSurface;
 //Acteurs
 space_t space;
 ship_t ship;
@@ -118,10 +124,11 @@ void eventCatcher(SDL_Event *event) {
 }
 
 int main(int argc, char *argv[]) {
-  SDL_Surface *surface = gu_init_SDL("URS Ship Viewer");
+  SDL_Surface *screen = gu_init_SDL("URS Ship Viewer");
   gu_init_GL();
   gu_init_display(display);
 
+  fpsFont = TTF_OpenFont("res/fonts/arial.ttf", 20);
 
   skuInitKeyBinder(&kb);
   skuBindKeyHandler(&kb, SDLK_BACKSPACE, reinitCam);
@@ -145,7 +152,7 @@ int main(int argc, char *argv[]) {
   glLightfv(GL_LIGHT0, GL_SPECULAR, whiteLight);
 
   glMatrixMode(GL_PROJECTION);
-  gluPerspective(50, (float) surface->w / surface->h, 1, 10000);
+  gluPerspective(50, (float) screen->w / screen->h, 1, 10000);
   glMatrixMode(GL_MODELVIEW);
   reinitCam();
 
@@ -163,6 +170,12 @@ int main(int argc, char *argv[]) {
   Uint32 startTime;
   Uint32 ellapsedTime = 0;
   int frameNb = 0;
+  char buff[SHORT_BUFF_LENGTH];
+  SDL_Rect fpsPosition;
+  fpsPosition.x = 60;
+  fpsPosition.y = 60;
+  GLuint fpsTex;
+  glGenTextures(1, &fpsTex);
 
   //Boucle principale
   while (continuer) {
@@ -170,8 +183,11 @@ int main(int argc, char *argv[]) {
     //Les FPS
     startTime = SDL_GetTicks();
     if (ellapsedTime >= 1000) {
-      printf("\r~%d fps", frameNb);
-      fflush(stdout);
+      //      printf("\r~%d fps", frameNb);
+      //      fflush(stdout);
+      snprintf(buff, SHORT_BUFF_LENGTH, "%d fps", frameNb);
+      buff[6] = 0;
+      fpsSurface = TTF_RenderText_Solid(fpsFont, buff, fpsFontColor);
       ellapsedTime = 0;
       frameNb = 0;
     }
@@ -188,6 +204,6 @@ int main(int argc, char *argv[]) {
   }
   //C'est finit, libération des ressources
   printf("\n");
-  gu_SDLQuit(1);
+  gu_SDLQuit(1, fpsFont);
   exit(EXIT_SUCCESS);
 }

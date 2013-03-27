@@ -2,6 +2,7 @@
 #define GL_UTILS
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include <GL/gl.h>
 
 typedef struct {
@@ -9,12 +10,6 @@ typedef struct {
   float y;
   float z;
 } vector_t;
-
-/**
- * Quitte le programme en terminant correctement la SDL et en renvoyant un EXIT_FAILURE.
- */
-void _gu_SDLQuit();
-
 
 /**
  * Activation des lumières et de la lumière 0.
@@ -49,7 +44,7 @@ void gu_display();
  * Quitte le programme en terminant correctement la SDL et en renvoyant
  * un EXIT_SUCCESS si exitSuccess != 0, un EXIT_FAILURE sinon.
  */
-void gu_SDLQuit(int exitSuccess);
+void gu_SDLQuit(int exitSuccess, TTF_Font *font);
 
 /**
  * Dessine un parallépipède de longueur l, hauteur h et profondeur p,

@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
 
@@ -16,6 +17,7 @@
 #define abs_val(a) (((a)>0)?(a):(-a))
 #define sign(a) (((a)>0)?(1):(-1))
 
+TTF_Font *fpsFont;
 keyBinder kb;
 camCamera camera;
 planet_t planet1;
@@ -233,6 +235,6 @@ int main(int argc, char *argv[]) {
   
   // C'est fini : on libère les ressources proprement
   printf("\n");
-  gu_SDLQuit(1);  
+  gu_SDLQuit(1, fpsFont);  
   exit(EXIT_SUCCESS);
 }

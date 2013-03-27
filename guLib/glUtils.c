@@ -13,7 +13,11 @@
 //La fonction de display, appelée en far-call
 void (*displayFunction)(void);
 
-void gu_SDLQuit(int exitSuccess) {
+void gu_SDLQuit(int exitSuccess, TTF_Font *font) {
+  if (font != NULL) {
+    TTF_CloseFont(font);
+  }
+  TTF_Quit();
   SDL_Quit();
   if (exitSuccess) {
     exit(EXIT_SUCCESS);
@@ -39,7 +43,7 @@ SDL_Surface *gu_init_SDL(const char *title) {
 
   if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) == -1) {
     fprintf(stderr, "Impossible d'activer le double buffer\n");
-    gu_SDLQuit(0);
+    gu_SDLQuit(0, NULL);
   }
   
   SDL_WM_SetCaption(title, NULL);
@@ -47,11 +51,15 @@ SDL_Surface *gu_init_SDL(const char *title) {
   SDL_Surface *surface;
   if ((surface = SDL_SetVideoMode(0, 0, 32, SDL_OPENGL | SDL_FULLSCREEN)) == NULL) {
     fprintf(stderr, "Impossible de passer en mode OpenGL : %s\n", SDL_GetError());
-    gu_SDLQuit(0);
+    gu_SDLQuit(0, NULL);
   }
   
   SDL_ShowCursor(SDL_DISABLE);
   SDL_WM_GrabInput(SDL_GRAB_ON);
+  
+  if (TTF_Init() == -1) {
+    fprintf(stderr, "TTF engine didn't initialized properly\nLog : %s", TTF_GetError());
+  }
   
   return surface;
 }
@@ -64,6 +72,8 @@ void gu_init_GL(void) {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_CULL_FACE);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   
   glMatrixMode(GL_MODELVIEW);
 }
