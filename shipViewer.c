@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
 #include <GL/glu.h>
 
 #include "guLib/glUtils.h"
@@ -22,9 +21,6 @@ int continuer = 0;
 int doMotion = 0;
 float speed = 5.;
 float rotSpeed = 2.;
-TTF_Font *fpsFont;
-SDL_Color fpsFontColor = {1, 1, 1};
-SDL_Surface *fpsSurface;
 //Acteurs
 space_t space;
 ship_t ship;
@@ -124,11 +120,14 @@ void eventCatcher(SDL_Event *event) {
 }
 
 int main(int argc, char *argv[]) {
-  SDL_Surface *screen = gu_init_SDL("URS Ship Viewer");
+  SDL_Surface *screen;
+  if (argc > 1) {
+    screen = gu_init_SDL("URS Ship Viewer", atoi(argv[1]));
+  } else {
+    screen = gu_init_SDL("URS Ship Viewer", 0);
+  }
   gu_init_GL();
   gu_init_display(display);
-
-  fpsFont = TTF_OpenFont("res/fonts/arial.ttf", 20);
 
   skuInitKeyBinder(&kb);
   skuBindKeyHandler(&kb, SDLK_BACKSPACE, reinitCam);
@@ -170,24 +169,15 @@ int main(int argc, char *argv[]) {
   Uint32 startTime;
   Uint32 ellapsedTime = 0;
   int frameNb = 0;
-  char buff[SHORT_BUFF_LENGTH];
-  SDL_Rect fpsPosition;
-  fpsPosition.x = 60;
-  fpsPosition.y = 60;
-  GLuint fpsTex;
-  glGenTextures(1, &fpsTex);
 
   //Boucle principale
   while (continuer) {
-
+    
     //Les FPS
     startTime = SDL_GetTicks();
     if (ellapsedTime >= 1000) {
-      //      printf("\r~%d fps", frameNb);
-      //      fflush(stdout);
-      snprintf(buff, SHORT_BUFF_LENGTH, "%d fps", frameNb);
-      buff[6] = 0;
-      fpsSurface = TTF_RenderText_Solid(fpsFont, buff, fpsFontColor);
+      printf("\r~%d fps", frameNb);
+      fflush(stdout);
       ellapsedTime = 0;
       frameNb = 0;
     }
@@ -204,6 +194,6 @@ int main(int argc, char *argv[]) {
   }
   //C'est finit, libération des ressources
   printf("\n");
-  gu_SDLQuit(1, fpsFont);
+  gu_SDLQuit(1);
   exit(EXIT_SUCCESS);
 }

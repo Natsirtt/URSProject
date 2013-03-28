@@ -17,7 +17,6 @@
 #define abs_val(a) (((a)>0)?(a):(-a))
 #define sign(a) (((a)>0)?(1):(-1))
 
-TTF_Font *fpsFont;
 keyBinder kb;
 camCamera camera;
 planet_t planet1;
@@ -26,6 +25,7 @@ planet_t moon;
 planet_t autoPilotTarget;
 space_t spaceSphere;
 sun_t sun;
+sun_t sun2;
 int autoPilot = 0;
 
 int continuer;
@@ -158,7 +158,12 @@ void eventCatcher(SDL_Event *event) {
 }
 
 int main(int argc, char *argv[]) {
-  SDL_Surface *surface = gu_init_SDL("URS - University of Rouen Starship");
+  SDL_Surface *screen;
+  if (argc > 1) {
+    screen = gu_init_SDL("URS - University of Rouen Starship", atoi(argv[1]));
+  } else {
+    screen = gu_init_SDL("URS - University of Rouen Starship", 0);
+  }
   gu_init_GL();
   gu_init_display(display);
   
@@ -185,7 +190,7 @@ int main(int argc, char *argv[]) {
   glLightfv(GL_LIGHT0, GL_SPECULAR, whiteLight);
  
   glMatrixMode(GL_PROJECTION);
-  gluPerspective(50, (float) surface->w / surface->h, 4, 1000000000);
+  gluPerspective(50, (float) screen->w / screen->h, 4, 1000000000);
   glMatrixMode(GL_MODELVIEW);
   reinitCam();
   
@@ -235,6 +240,6 @@ int main(int argc, char *argv[]) {
   
   // C'est fini : on libère les ressources proprement
   printf("\n");
-  gu_SDLQuit(1, fpsFont);  
+  gu_SDLQuit(1);  
   exit(EXIT_SUCCESS);
 }

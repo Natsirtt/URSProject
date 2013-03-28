@@ -37,7 +37,7 @@
 #define Q2 28
 #define O2 29
 #define G2 30
-//3 : les ailerettes du vaisseau
+//3 : les ailettes du vaisseau
 #define M3_1 31
 #define M3_2 32
 #define M3_1_HIGH 33
@@ -71,10 +71,15 @@ void __shipModelize(ship_t *s) {
   __shipSetVertex(s, K, 1.75, 2., 1.5); /*K*/
   __shipSetVertex(s, L, -4., -2, 1.5); /*L*/
   __shipSetVertex(s, M, -4., 2., 1.5); /*M*/
-  __shipSetVertex(s, M3_1, -3.5, 1., 1.5);
-  __shipSetVertex(s, M3_1_HIGH, -5.2, 1.5, 3.2);
-  __shipSetVertex(s, M3_2, -1., 1., 1.5);
-  __shipSetVertex(s, M3_2_HIGH, -3., 1.5, 3.2);
+  //__shipSetVertex(s, M3_1, -3.5 - 1.5, 1., 1.5);
+  __shipSetVertex(s, M3_1, -4., 0.9, 0.);
+  __shipSetVertex(s, M3_1_HIGH, -6.7, 1.8, 2.5);
+  __shipSetVertex(s, M3_2, -0.5, 0.9, 0.);
+  __shipSetVertex(s, M3_2_HIGH, -4.5, 1.8, 2.5);
+  __shipSetVertex(s, M3_3, -4., 1.1, 0.);
+  __shipSetVertex(s, M3_3_HIGH, -6.7, 2., 2.5);
+  __shipSetVertex(s, M3_4, -0.5, 1.1, 0.);
+  __shipSetVertex(s, M3_4_HIGH, -4.5, 2., 2.5);
   __shipSetVertex(s, N, -5.5, -2.5, .5); /*N*/
   __shipSetVertex(s, N2, -5.5, -2.5, 0.); /*N2*/
   __shipSetVertex(s, O, -5.5, 2.5, .5); /*O*/
@@ -201,6 +206,14 @@ void __shipDrawPolygon(ship_t *s, int totalVertexNb, int v1, int v2, int v3, ...
   va_end(args);
 }
 
+void __drawLittleWings(ship_t *s) {
+  __shipDrawQuad(s, M3_1, M3_2, M3_2_HIGH, M3_1_HIGH, .0, .0, 1., .0, 1., 1., .0, 1.);
+  __shipDrawQuad(s, M3_3, M3_3_HIGH, M3_4_HIGH, M3_4, .0, .0, 1., .0, 1., 1., .0, 1.);
+  __shipDrawQuad(s, M3_4_HIGH, M3_3_HIGH, M3_1_HIGH, M3_2_HIGH, .0, .0, 1., .0, 1., 1., .0, 1.);
+  __shipDrawQuad(s, M3_3_HIGH, M3_3, M3_1, M3_1_HIGH, .0, .0, 1., .0, 1., 1., .0, 1.);
+  __shipDrawQuad(s, M3_2_HIGH, M3_2, M3_4, M3_4_HIGH, .0, .0, 1., .0, 1., 1., .0, 1.);
+}
+
 void drawShip(ship_t *s) {
   //glDisable(GL_CULL_FACE);
   glPushMatrix();
@@ -285,11 +298,20 @@ void drawShip(ship_t *s) {
   __shipDrawQuad(s, U, G2, O2, W, .0, .0, 1., .0, 1., 1., .0, 1.);
   __shipDrawTriangle(s, S, B, G2, .0, .0, 1., .0, 1., 1.);
 
-  //Ailerettes
-  __shipDrawQuad(s, M3_1, M3_2, M3_2_HIGH, M3_1_HIGH, .0, .0, 1., .0, 1., 1., .0, 1.);
+  //Ailettes
+  __drawLittleWings(s);
 
-  //glEnable(GL_CULL_FACE);
+  //Ailette symétrique
+  float symMatrix[] = {1., 0., 0., 0.,
+                       0., -1., 0., 0.,
+                       0., 0., 1., 0.,
+                       0., 0., 0., 1.};
+  glMultMatrixf(symMatrix);
+  glFrontFace(GL_CW);
+  __drawLittleWings(s);
+  glFrontFace(GL_CCW);
   glPopMatrix();
+  //glEnable(GL_CULL_FACE);
 }
 
 void rotateShip(ship_t* s, float x, float y, float z) {
