@@ -13,11 +13,7 @@
 //La fonction de display, appelée en far-call
 void (*displayFunction)(void);
 
-void gu_SDLQuit(int exitSuccess, TTF_Font *font) {
-  if (font != NULL) {
-    TTF_CloseFont(font);
-  }
-  TTF_Quit();
+void gu_SDLQuit(int exitSuccess) {
   SDL_Quit();
   if (exitSuccess) {
     exit(EXIT_SUCCESS);
@@ -38,29 +34,31 @@ void gu_initLights() {
 /**
  * Initialisation de la SDL, création du contexte OpenGL et ouverture de la fenetre.
  */
-SDL_Surface *gu_init_SDL(const char *title) {
+SDL_Surface *gu_init_SDL(const char *title, int antialiasing) {
   SDL_Init(SDL_INIT_VIDEO);
 
   if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) == -1) {
     fprintf(stderr, "Impossible d'activer le double buffer\n");
-    gu_SDLQuit(0, NULL);
+    gu_SDLQuit(0);
+  }
+  
+  if (antialiasing > 0) {
+    if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, antialiasing) == -1) {
+      fprintf(stderr, "Impossible d'activer l'antialiasing (%d samples)", antialiasing);
+    }
   }
   
   SDL_WM_SetCaption(title, NULL);
-  
+
   SDL_Surface *surface;
   if ((surface = SDL_SetVideoMode(0, 0, 32, SDL_OPENGL | SDL_FULLSCREEN)) == NULL) {
     fprintf(stderr, "Impossible de passer en mode OpenGL : %s\n", SDL_GetError());
-    gu_SDLQuit(0, NULL);
+    gu_SDLQuit(0);
   }
   
   SDL_ShowCursor(SDL_DISABLE);
   SDL_WM_GrabInput(SDL_GRAB_ON);
-  
-  if (TTF_Init() == -1) {
-    fprintf(stderr, "TTF engine didn't initialized properly\nLog : %s", TTF_GetError());
-  }
-  
+    
   return surface;
 }
 

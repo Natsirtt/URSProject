@@ -2,7 +2,6 @@
 #define GL_UTILS
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
 #include <GL/gl.h>
 
 typedef struct {
@@ -20,7 +19,7 @@ void gu_initLights();
  * Initialisation de la SDL, création du contexte OpenGL et ouverture de la fenetre en plein écran.
  * Renvoie la surface afin de connaitre le ratio de la fenêtre.
  */
-SDL_Surface *gu_init_SDL(const char *title);
+SDL_Surface *gu_init_SDL(const char *title, int antialiasing);
 
 /**
  * Initialisation des états du contexte OpenGL.
@@ -44,7 +43,7 @@ void gu_display();
  * Quitte le programme en terminant correctement la SDL et en renvoyant
  * un EXIT_SUCCESS si exitSuccess != 0, un EXIT_FAILURE sinon.
  */
-void gu_SDLQuit(int exitSuccess, TTF_Font *font);
+void gu_SDLQuit(int exitSuccess);
 
 /**
  * Dessine un parallépipède de longueur l, hauteur h et profondeur p,
