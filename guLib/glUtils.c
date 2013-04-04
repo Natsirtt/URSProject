@@ -29,6 +29,8 @@ void gu_initLights() {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   //glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+  //glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+  glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 }
 
 /**

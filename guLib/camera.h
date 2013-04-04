@@ -47,6 +47,11 @@ extern "C" {
   void camFixePositionWithoutUp(camCamera * camera,
           float eyex, float eyey, float eyez,
           float centerx, float centery, float centerz);
+  
+  /**
+   * Positionne uniquement la position de l'oeil la caméra.
+   */
+  void camFixeEye(camCamera *camera, float eyex, float eyey, float eyez);
 
   /**
    * Fixe la sensibilité de la caméra aux déplacements.

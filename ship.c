@@ -2,8 +2,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-#include "guLib/glUtils.h"
+#include <math.h>
+#ifndef M_PI
+#define M_PI 3.141592654
+#endif
 
 #define A 0
 #define B 1
@@ -132,7 +134,10 @@ void initShip(ship_t *s, float x, float y, float z) {
   s->x = x;
   s->y = y;
   s->z = z;
-  rotateShip(s, 0, 0, 0);
+  s->xRot = 0.;
+  s->yRot = 0.;
+  s->zRot = 0.;
+  s->speed = 0.;
   __shipModelize(s);
   //__shipProduceNormals(s);
 
@@ -214,23 +219,29 @@ void __drawLittleWings(ship_t *s) {
   __shipDrawQuad(s, M3_2_HIGH, M3_2, M3_4, M3_4_HIGH, .0, .0, 1., .0, 1., 1., .0, 1.);
 }
 
+void _shipCycle(ship_t *s) {
+  s->x += s->speed;
+}
+
 void drawShip(ship_t *s) {
+  _shipCycle(s);
   //glDisable(GL_CULL_FACE);
   glPushMatrix();
   glTranslatef(s->x, s->y, s->z);
-  glRotatef(s->xRotation, 1., 0., 0.);
-  glRotatef(s->yRotation, 0., 1., 0.);
-  glRotatef(s->zRotation, 0., 0., 1.);
+//  glRotatef(1., s->xRot, s->yRot, s->zRot);
+  glRotatef(s->xRot, 1., 0., 0.);
+  glRotatef(s->yRot, 0., 1., 0.);
+  glRotatef(s->zRot, 0., 0., 1.);
 
   GLfloat diff[4] = {.6, .6, .6, 1};
   GLfloat amb[4] = {.2, .2, .2, 1};
-  int specCoeff = 1.;
+  float specCoeff = .5;
   GLfloat spec[4] = {specCoeff, specCoeff, specCoeff, 1};
 
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, amb);
   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-  glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 110);
+  glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 80);
 
   //Texture d'alu
   glBindTexture(GL_TEXTURE_2D, s->alumTex);
@@ -314,8 +325,23 @@ void drawShip(ship_t *s) {
   //glEnable(GL_CULL_FACE);
 }
 
-void rotateShip(ship_t* s, float x, float y, float z) {
-  s->xRotation += x;
-  s->yRotation += y;
-  s->zRotation += z;
+void rotateShip(ship_t *s, float xAngle, float yAngle, float zAngle) {
+  /*float xAngleRad = xAngle * M_PI / 180;
+  float yAngleRad = yAngle * M_PI / 180;
+  float zAngleRad = zAngle * M_PI / 180;
+  
+  float xCos = cos(xAngleRad);
+  float xSin = sin(xAngleRad);
+  float yCos = cos(yAngleRad);
+  float ySin = sin(yAngleRad);
+  float zCos = cos(zAngleRad);
+  float zSin = sin(zAngleRad);*/
+  
+  s->xRot += xAngle;
+  s->yRot += yAngle;
+  s->zRot += zAngle;
+}
+
+void changeShipSpeed(ship_t *s, float newSpeed) {
+  s->speed = newSpeed;
 }

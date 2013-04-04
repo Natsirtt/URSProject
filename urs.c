@@ -13,6 +13,7 @@
 #include "planet.h"
 #include "sun.h"
 #include "space.h"
+#include "ship.h"
 
 #define abs_val(a) (((a)>0)?(a):(-a))
 #define sign(a) (((a)>0)?(1):(-1))
@@ -25,13 +26,11 @@ planet_t moon;
 planet_t autoPilotTarget;
 space_t spaceSphere;
 sun_t sun;
-sun_t sun2;
+ship_t ship;
 int autoPilot = 0;
 
 int continuer;
-float rotationAngle = 0.;
 int doMotion = 0;
-float vitesse = 0.;
 
 void progQuit() {
   continuer = 0;
@@ -40,32 +39,32 @@ void progQuit() {
 GLuint lastUse = 0;
 void switchSpeed() {
   if (SDL_GetTicks() - lastUse >= 500) {
-    if (vitesse == 500.) {
-      vitesse = 100000.;
-    } else if (vitesse == 100000.) {
-      //vitesse = 500000.;
-      vitesse = 500.;
-    } else if (vitesse == 500000.) {
-      vitesse = 100010.;
+    if (ship.speed == 500.) {
+      ship.speed = 100000.;
+    } else if (ship.speed == 100000.) {
+      //s.speed = 500000.;
+      ship.speed = 500.;
+    } else if (ship.speed == 500000.) {
+      ship.speed = 100010.;
     } else {
-      vitesse = 500.;
+      ship.speed = 500.;
     }
     lastUse = SDL_GetTicks();
   }
 }
 
 void accelerate() {
-  if (vitesse == 0.) {
-    vitesse = 1.;
+  if (ship.speed == 0.) {
+    changeShipSpeed(&ship, 1.);
   }
-  vitesse *= 1.1;
+  changeShipSpeed(&ship, ship.speed * 1.1);
 }
 
 void decelerate() {
-  if (vitesse <= 1.) {
-    vitesse = 0.;
+  if (ship.speed <= 1.) {
+    changeShipSpeed(&ship, 0.);
   }
-  vitesse /= 1.1;
+   changeShipSpeed(&ship, ship.speed / 1.1);
 }
 
 void reinitCam() {
@@ -74,22 +73,22 @@ void reinitCam() {
 }
 
 void forward() {
-  camAvance(&camera, vitesse);
+  camAvance(&camera, ship.speed);
   camLookAt(&camera);
 }
 
 void backward() {
-  camAvance(&camera, -vitesse);
+  camAvance(&camera, -ship.speed);
   camLookAt(&camera);
 }
 
 void translateLeft() {
-  camPasDeCote(&camera, -vitesse);
+  camPasDeCote(&camera, -ship.speed);
   camLookAt(&camera);
 }
 
 void translateRight() {
-  camPasDeCote(&camera, vitesse);
+  camPasDeCote(&camera, ship.speed);
   camLookAt(&camera);
 }
 
@@ -102,6 +101,11 @@ void doAutoPilot() {
   //autoPilot = goToPlanet(...);
 }
 
+void moveCamToShip(camCamera *cam, ship_t *s) {
+  camFixeEye(&camera, ship.x, ship.y, ship.z + 30);
+  camLookAt(&camera);
+}
+
 void display() {
   GLfloat lightPos[4] = {sun.x, sun.y, sun.z, 1};
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
@@ -112,6 +116,8 @@ void display() {
   drawPlanet(&planet2);
   drawPlanet(&moon);
   drawSun(&sun);
+  moveCamToShip(&camera, &ship);
+  drawShip(&ship);
 }
 
 void motion(SDL_MouseMotionEvent motion) {
@@ -195,6 +201,8 @@ int main(int argc, char *argv[]) {
   reinitCam();
   
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  
+  initShip(&ship, 0, 0, 1010000);
   
   GLuint textures;
   gu_initTextures(&textures, 1, 1, "space.png");

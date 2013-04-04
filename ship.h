@@ -3,15 +3,18 @@
 
 #include <GL/gl.h>
 
+#include "guLib/glUtils.h"
+
 #define VERTICES_NB 39
 
 typedef struct {
   float x;
   float y;
   float z;
-  float xRotation;
-  float yRotation;
-  float zRotation;
+  float speed;
+  float xRot;
+  float yRot;
+  float zRot;
   float vertices[VERTICES_NB][3];
   GLuint glassTex;
   GLuint alumTex;
@@ -24,6 +27,8 @@ void setShipPosition(ship_t* s, float x, float y, float z);
 
 void drawShip(ship_t *s);
 
-void rotateShip(ship_t *s, float x, float y, float z);
+void rotateShip(ship_t* s, float xAngle, float yAngle, float zAngle);
+
+void changeShipSpeed(ship_t *s, float newSpeed);
 
 #endif

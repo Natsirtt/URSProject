@@ -2,7 +2,7 @@ GCC=gcc
 RM=rm -f
 LIBS=-lGLU -lGL -lm
 LIBS_SDL=-lSDL_image `sdl-config --libs`
-CFLAGS=--std=c99 -Wall
+CFLAGS=-pedantic -std=c99 -Wall
 CFLAGS_SDL=`sdl-config --cflags` -Wall
 
 all: urs shipViewer
@@ -44,4 +44,4 @@ fblUtils.o:
 	make --directory=guLib
 
 clean:
-	$(RM) *.{o,gch} & make --directory=guLib clean
+	$(RM) *.o & make --directory=guLib clean
