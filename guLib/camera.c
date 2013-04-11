@@ -75,8 +75,8 @@ void camFixePositionWithoutUp(camCamera * camera,
   camFixePosition(camera, eyex, eyey, eyez, centerx, centery, centerz, camera->up.x, camera->up.y, camera->up.z);
 }
 
-void camFixeEye(camCamera *camera, float eyex, float eyey, float eyez) {
-  camFixePositionWithoutUp(camera, eyex, eyey, eyez, camera->forward.x, camera->up.y, camera->up.z);
+void camFixeEye(camCamera * camera, float eyex, float eyey, float eyez) {
+  camFixePositionWithoutUp(camera, eyex, eyey, eyez, camera->forward.x, camera->forward.y, camera->forward.z);
 }
 
 void camFixeSensibilite(camCamera * camera, float sensibilite) {

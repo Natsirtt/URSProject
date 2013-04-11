@@ -134,9 +134,9 @@ void initShip(ship_t *s, float x, float y, float z) {
   s->x = x;
   s->y = y;
   s->z = z;
-  s->xRot = 0.;
+  s->xRot = -90.;
   s->yRot = 0.;
-  s->zRot = 0.;
+  s->zRot = 90.;
   s->speed = 0.;
   __shipModelize(s);
   //__shipProduceNormals(s);
@@ -220,7 +220,7 @@ void __drawLittleWings(ship_t *s) {
 }
 
 void _shipCycle(ship_t *s) {
-  s->x += s->speed;
+ // s->x += s->speed;
 }
 
 void drawShip(ship_t *s) {

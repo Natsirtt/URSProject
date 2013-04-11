@@ -73,8 +73,12 @@ void reinitCam() {
 }
 
 void forward() {
+  /*
   camAvance(&camera, ship.speed);
   camLookAt(&camera);
+   */
+  int newZ = ship.z + ship.speed;
+  setShipPosition(&ship, ship.x, ship.y, newZ);
 }
 
 void backward() {
