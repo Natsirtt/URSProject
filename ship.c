@@ -131,13 +131,21 @@ void __shipProduceOneNormal(ship_t *s, vector_t *vBuff, int v1, int v2, int v3) 
 }*/
 
 void initShip(ship_t *s, float x, float y, float z) {
-  s->x = x;
-  s->y = y;
-  s->z = z;
-  s->xRot = -90.;
-  s->yRot = 0.;
-  s->zRot = 90.;
-  s->speed = 0.;
+  printf("%f, %f, %f\n", x, y, z);
+  s->pos.x = x;
+  s->pos.y = y;
+  s->pos.z = z;
+
+  s->forward.x =  0;
+  s->forward.y =  0;
+  s->forward.z = -1;
+  
+  s->up.x = 0;
+  s->up.y = 1;
+  s->up.z = 0;
+  
+  s->speed = 0;
+  
   __shipModelize(s);
   //__shipProduceNormals(s);
 
@@ -149,10 +157,85 @@ void initShip(ship_t *s, float x, float y, float z) {
   s->alumTex = texDesc[1];
 }
 
-void setShipPosition(ship_t *s, float x, float y, float z) {
-  s->x = x;
-  s->y = y;
-  s->z = z;
+void setShipPosition(ship_t* s, float posx, float posy, float posz,
+                                float forwardx, float forwardy, float forwardz,
+                                float upx, float upy, float upz) {
+  // La position de l'observateur
+  s->pos.x = posx;
+  s->pos.y = posy;
+  s->pos.z = posz;
+
+  // Le vecteur observateur->point visé
+  s->forward.x = forwardx - posx;
+  s->forward.y = forwardy - posy;
+  s->forward.z = forwardz - posz;
+  
+  // On normalise le vecteur
+  float norme = sqrt(pow(s->forward.x, 2)
+		     + pow(s->forward.y, 2)
+		     + pow(s->forward.z, 2));
+  s->forward.x /= norme;
+  s->forward.y /= norme;
+  s->forward.z /= norme;
+
+  // On calcule l'axe des abscisses du repère local
+  vector_t abscisses;
+  abscisses.x = s->forward.y * upz - s->forward.z * upy;
+  abscisses.y = s->forward.z * upx - s->forward.x * upz;
+  abscisses.z = s->forward.x * upy - s->forward.y * upx;
+
+  // On en déduit l'axe des ordonnées
+  // (cela permet éventuellement de "redresser" le vecteur up)
+  s->up.x = abscisses.y * s->forward.z - abscisses.z * s->forward.y;
+  s->up.y = abscisses.z * s->forward.x - abscisses.x * s->forward.z;
+  s->up.z = abscisses.x * s->forward.y - abscisses.y * s->forward.x;
+
+  norme = sqrt(pow(s->up.x, 2)
+	       + pow(s->up.y, 2)
+	       + pow(s->up.z, 2));
+  s->up.x /= norme;
+  s->up.y /= norme;
+  s->up.z /= norme;
+}
+
+void shipForward(ship_t *s, float step) {
+  s->pos.x += step * s->speed * s->forward.x;
+  s->pos.y += step * s->speed * s->forward.y;
+  s->pos.z += step * s->speed * s->forward.z;
+}
+
+void shipLookAt(const ship_t *s) {
+  glPushAttrib(GL_TRANSFORM_BIT);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  // Le repère de l'observateur en coordonnées du repère universel
+  vector_t obs_x, obs_y, obs_z;
+  
+  obs_y = s->up;
+
+  obs_z.x = -s->forward.x;
+  obs_z.y = -s->forward.y;
+  obs_z.z = -s->forward.z;
+
+  obs_x.z = obs_y.x * obs_z.y - obs_y.y * obs_z.x;
+  obs_x.x = obs_y.y * obs_z.z - obs_y.z * obs_z.y;
+  obs_x.y = obs_y.z * obs_z.x - obs_y.x * obs_z.z;
+
+  // Matrice de changement de repère :
+  // Repère universel -> repère local à la caméra
+  GLfloat mat[16] = {
+    obs_x.x, obs_y.x, obs_z.x, 0,
+    obs_x.y, obs_y.y, obs_z.y, 0,
+    obs_x.z, obs_y.z, obs_z.z, 0,
+    obs_x.x * -s->pos.x + obs_x.y * -s->pos.y + obs_x.z *-s->pos.z,
+    obs_y.x * -s->pos.x + obs_y.y * -s->pos.y + obs_y.z *-s->pos.z,
+    obs_z.x * -s->pos.x + obs_z.y * -s->pos.y + obs_z.z *-s->pos.z,
+    1
+  };
+
+  glMultMatrixf(mat);
+  glPopAttrib();
 }
 
 void __shipDrawVertex(ship_t *s, int vert) {
@@ -224,14 +307,12 @@ void _shipCycle(ship_t *s) {
 }
 
 void drawShip(ship_t *s) {
+  printf("x=%f - y=%f - z=%f - speed=%f\n", s->pos.x, s->pos.y, s->pos.z, s->speed);
+
   _shipCycle(s);
   //glDisable(GL_CULL_FACE);
   glPushMatrix();
-  glTranslatef(s->x, s->y, s->z);
-//  glRotatef(1., s->xRot, s->yRot, s->zRot);
-  glRotatef(s->xRot, 1., 0., 0.);
-  glRotatef(s->yRot, 0., 1., 0.);
-  glRotatef(s->zRot, 0., 0., 1.);
+  glTranslatef(s->pos.x, s->pos.y, s->pos.z);
 
   GLfloat diff[4] = {.6, .6, .6, 1};
   GLfloat amb[4] = {.2, .2, .2, 1};
@@ -323,23 +404,6 @@ void drawShip(ship_t *s) {
   glFrontFace(GL_CCW);
   glPopMatrix();
   //glEnable(GL_CULL_FACE);
-}
-
-void rotateShip(ship_t *s, float xAngle, float yAngle, float zAngle) {
-  /*float xAngleRad = xAngle * M_PI / 180;
-  float yAngleRad = yAngle * M_PI / 180;
-  float zAngleRad = zAngle * M_PI / 180;
-  
-  float xCos = cos(xAngleRad);
-  float xSin = sin(xAngleRad);
-  float yCos = cos(yAngleRad);
-  float ySin = sin(yAngleRad);
-  float zCos = cos(zAngleRad);
-  float zSin = sin(zAngleRad);*/
-  
-  s->xRot += xAngle;
-  s->yRot += yAngle;
-  s->zRot += zAngle;
 }
 
 void changeShipSpeed(ship_t *s, float newSpeed) {

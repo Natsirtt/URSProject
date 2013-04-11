@@ -8,13 +8,10 @@
 #define VERTICES_NB 39
 
 typedef struct {
-  float x;
-  float y;
-  float z;
+  vector_t pos;
+  vector_t forward;
+  vector_t up;
   float speed;
-  float xRot;
-  float yRot;
-  float zRot;
   float vertices[VERTICES_NB][3];
   GLuint glassTex;
   GLuint alumTex;
@@ -23,7 +20,13 @@ typedef struct {
 
 void initShip(ship_t *s, float x, float y, float z);
 
-void setShipPosition(ship_t* s, float x, float y, float z);
+void setShipPosition(ship_t* s, float posx, float posy, float posz,
+                                float forwardx, float forwardy, float forwardz,
+                                float upx, float upy, float upz);
+
+void shipForward(ship_t *s, float step);
+
+void shipLookAt(const ship_t *s);
 
 void drawShip(ship_t *s);
 

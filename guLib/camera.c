@@ -43,9 +43,9 @@ void camLookAt(const camCamera * camera) {
     obs_x.x, obs_y.x, obs_z.x, 0,
     obs_x.y, obs_y.y, obs_z.y, 0,
     obs_x.z, obs_y.z, obs_z.z, 0,
-    obs_x.x * -camera->eye.x + obs_x.y * -camera->eye.y + obs_x.z *-camera->eye.z,
-    obs_y.x * -camera->eye.x + obs_y.y * -camera->eye.y + obs_y.z *-camera->eye.z,
-    obs_z.x * -camera->eye.x + obs_z.y * -camera->eye.y + obs_z.z *-camera->eye.z,
+    obs_x.x * -camera->pos.x + obs_x.y * -camera->pos.y + obs_x.z *-camera->pos.z,
+    obs_y.x * -camera->pos.x + obs_y.y * -camera->pos.y + obs_y.z *-camera->pos.z,
+    obs_z.x * -camera->pos.x + obs_z.y * -camera->pos.y + obs_z.z *-camera->pos.z,
     1
   };
 
@@ -54,9 +54,9 @@ void camLookAt(const camCamera * camera) {
 }
 
 void camInit(camCamera * camera) {
-  camera->eye.x = 0;
-  camera->eye.y = 0;
-  camera->eye.z = 0;
+  camera->pos.x = 0;
+  camera->pos.y = 0;
+  camera->pos.z = 0;
 
   camera->forward.x =  0;
   camera->forward.y =  0;
@@ -88,9 +88,9 @@ void camFixePosition(camCamera * camera,
 		     float centerx, float centery, float centerz,
 		     float upx, float upy, float upz) {
   // La position de l'observateur
-  camera->eye.x = eyex;
-  camera->eye.y = eyey;
-  camera->eye.z = eyez;
+  camera->pos.x = eyex;
+  camera->pos.y = eyey;
+  camera->pos.z = eyez;
 
   // Le vecteur observateur->point visé
   camera->forward.x = centerx - eyex;
@@ -126,9 +126,9 @@ void camFixePosition(camCamera * camera,
 }
 
 void camAvance(camCamera * camera, float dep) {
-  camera->eye.x += dep * camera->sensibilite * camera->forward.x;
-  camera->eye.y += dep * camera->sensibilite * camera->forward.y;
-  camera->eye.z += dep * camera->sensibilite * camera->forward.z;
+  camera->pos.x += dep * camera->sensibilite * camera->forward.x;
+  camera->pos.y += dep * camera->sensibilite * camera->forward.y;
+  camera->pos.z += dep * camera->sensibilite * camera->forward.z;
 }
 
 void camPasDeCote(camCamera * camera, float dep) {
@@ -138,9 +138,9 @@ void camPasDeCote(camCamera * camera, float dep) {
   vecDep.x = camera->up.y * camera->forward.z - camera->up.z * camera->forward.y;
   vecDep.y = camera->up.z * camera->forward.x - camera->up.x * camera->forward.z;
 
-  camera->eye.x += -dep * camera->sensibilite * vecDep.x;
-  camera->eye.y += -dep * camera->sensibilite * vecDep.y;
-  camera->eye.z += -dep * camera->sensibilite * vecDep.z;
+  camera->pos.x += -dep * camera->sensibilite * vecDep.x;
+  camera->pos.y += -dep * camera->sensibilite * vecDep.y;
+  camera->pos.z += -dep * camera->sensibilite * vecDep.z;
   
 }
 

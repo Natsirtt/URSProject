@@ -17,7 +17,7 @@ typedef struct {
 } camVector;
 
 typedef struct {
-  camVector eye;
+  camVector pos;
   camVector forward;
   camVector up;
   float sensibilite;

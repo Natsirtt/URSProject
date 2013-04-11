@@ -36,23 +36,6 @@ void progQuit() {
   continuer = 0;
 }
 
-GLuint lastUse = 0;
-void switchSpeed() {
-  if (SDL_GetTicks() - lastUse >= 500) {
-    if (ship.speed == 500.) {
-      ship.speed = 100000.;
-    } else if (ship.speed == 100000.) {
-      //s.speed = 500000.;
-      ship.speed = 500.;
-    } else if (ship.speed == 500000.) {
-      ship.speed = 100010.;
-    } else {
-      ship.speed = 500.;
-    }
-    lastUse = SDL_GetTicks();
-  }
-}
-
 void accelerate() {
   if (ship.speed == 0.) {
     changeShipSpeed(&ship, 1.);
@@ -77,23 +60,20 @@ void forward() {
   camAvance(&camera, ship.speed);
   camLookAt(&camera);
    */
-  int newZ = ship.z + ship.speed;
-  setShipPosition(&ship, ship.x, ship.y, newZ);
+  shipForward(&ship, 1);
+  shipLookAt(&ship);
 }
 
 void backward() {
-  camAvance(&camera, -ship.speed);
-  camLookAt(&camera);
+  
 }
 
 void translateLeft() {
-  camPasDeCote(&camera, -ship.speed);
-  camLookAt(&camera);
+  
 }
 
 void translateRight() {
-  camPasDeCote(&camera, ship.speed);
-  camLookAt(&camera);
+  
 }
 
 void activeAutoPilot() {
@@ -105,16 +85,16 @@ void doAutoPilot() {
   //autoPilot = goToPlanet(...);
 }
 
-void moveCamToShip(camCamera *cam, ship_t *s) {
-  camFixeEye(&camera, ship.x, ship.y, ship.z + 30);
-  camLookAt(&camera);
+void moveCamToShip(camCamera *camera, ship_t *ship) {
+  camFixeEye(camera, ship->pos.x, ship->pos.y, ship->pos.z + 30.);
+  camLookAt(camera);
 }
 
 void display() {
   GLfloat lightPos[4] = {sun.x, sun.y, sun.z, 1};
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
   
-  moveSpace(&spaceSphere, camera.eye.x, camera.eye.y, camera.eye.z);
+  moveSpace(&spaceSphere, camera.pos.x, camera.pos.y, camera.pos.z);
   drawSpace(&spaceSphere);
   drawPlanet(&planet1);
   drawPlanet(&planet2);
@@ -210,7 +190,7 @@ int main(int argc, char *argv[]) {
   
   GLuint textures;
   gu_initTextures(&textures, 1, 1, "space.png");
-  initSpace(&spaceSphere, 0, 0, -100, 10, 90, 100, textures, 10);
+  initSpace(&spaceSphere, 0, 0, -100, 1000000, 90, 100, textures, 10);
   
   gu_initTextures(&textures, 1, 0, "blueMap.jpg");
   initPlanet(&planet2, 100000, 0, 800000, 30000, 90, -25, .002, 0, textures);

@@ -16,7 +16,7 @@
 #define SHORT_BUFF_LENGTH 64
 
 keyBinder kb;
-camCamera camera;
+camCamera s;
 int continuer = 0;
 int doMotion = 0;
 float speed = 5.;
@@ -27,38 +27,38 @@ ship_t ship;
 sun_t sun;
 
 void reinitCam() {
-  camFixePosition(&camera, 0, 0, 50, 0, 0, 0, 0, 1, 0);
-  camLookAt(&camera);
+  camFixePosition(&s, 0, 0, 50, 0, 0, 0, 0, 1, 0);
+  camLookAt(&s);
 }
 
 void display() {
   GLfloat lightPos[4] = {sun.x, sun.y, sun.z, 1};
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-  moveSpace(&space, camera.eye.x, camera.eye.y, camera.eye.z);
+  moveSpace(&space, s.pos.x, s.pos.y, s.pos.z);
   drawSpace(&space);
   drawShip(&ship);
   drawSun(&sun);
 }
 
 void zoom() {
-  camAvance(&camera, speed);
-  camLookAt(&camera);
+  camAvance(&s, speed);
+  camLookAt(&s);
 }
 
 void dezoom() {
-  camAvance(&camera, -speed);
-  camLookAt(&camera);
+  camAvance(&s, -speed);
+  camLookAt(&s);
 }
 
 void left() {
-  camPasDeCote(&camera, -speed);
-  camLookAt(&camera);
+  camPasDeCote(&s, -speed);
+  camLookAt(&s);
 }
 
 void right() {
-  camPasDeCote(&camera, speed);
-  camLookAt(&camera);
+  camPasDeCote(&s, speed);
+  camLookAt(&s);
 }
 
 void rotateUp() {
@@ -83,8 +83,8 @@ void motion(SDL_MouseMotionEvent motion) {
   // Le WarpMouse(320, 320) génère également un évènement
   // motion qu'il ne faut pas prendre en compte.
   if (doMotion && (motion.x != 320 || motion.y != 320)) {
-    camTourneEtLeve(&camera, motion.xrel, motion.yrel);
-    camLookAt(&camera);
+    camTourneEtLeve(&s, motion.xrel, motion.yrel);
+    camLookAt(&s);
     SDL_WarpMouse(320, 320);
   } else {
     // La première fois xrel et yrel ne sont pas pertinents,
@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
   skuBindKeyHandler(&kb, SDLK_q, left);
   skuBindKeyHandler(&kb, SDLK_d, right);
 
-  camInit(&camera);
+  camInit(&s);
 
   gu_initLights();
 
