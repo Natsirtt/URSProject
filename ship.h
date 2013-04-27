@@ -9,6 +9,7 @@ typedef struct {
   float x;
   float y;
   float z;
+  float speed;
   float xRotation;
   float yRotation;
   float zRotation;
@@ -25,5 +26,11 @@ void setShipPosition(ship_t* s, float x, float y, float z);
 void drawShip(ship_t *s);
 
 void rotateShip(ship_t *s, float x, float y, float z);
+
+void setShipSpeed(ship_t *s, float speed);
+
+float getShipSpeed(ship_t *s);
+
+void shipLifeCycle(ship_t *s);
 
 #endif
