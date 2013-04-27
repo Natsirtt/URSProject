@@ -79,6 +79,41 @@ void camFixeSensibilite(camCamera * camera, float sensibilite) {
   camera->sensibilite = sensibilite;
 }
 
+void camFixePositionWithoutUpNorForward(camCamera * camera,
+        float eyex, float eyey, float eyez) {
+  // La position de l'observateur
+  camera->eye.x = eyex;
+  camera->eye.y = eyey;
+  camera->eye.z = eyez;
+  
+  // On normalise le vecteur
+  float norme = sqrt(pow(camera->forward.x, 2)
+		     + pow(camera->forward.y, 2)
+		     + pow(camera->forward.z, 2));
+  camera->forward.x /= norme;
+  camera->forward.y /= norme;
+  camera->forward.z /= norme;
+
+  // On calcule l'axe des abscisses du repère local
+  camVector abscisses;
+  abscisses.x = camera->forward.y * 0 - camera->forward.z * 1;
+  abscisses.y = camera->forward.z * 0 - camera->forward.x * 0;
+  abscisses.z = camera->forward.x * 1 - camera->forward.y * 0;
+
+  // On en déduit l'axe des ordonnées
+  // (cela permet éventuellement de "redresser" le vecteur up)
+  camera->up.x = abscisses.y * camera->forward.z - abscisses.z * camera->forward.y;
+  camera->up.y = abscisses.z * camera->forward.x - abscisses.x * camera->forward.z;
+  camera->up.z = abscisses.x * camera->forward.y - abscisses.y * camera->forward.x;
+
+  norme = sqrt(pow(camera->up.x, 2)
+	       + pow(camera->up.y, 2)
+	       + pow(camera->up.z, 2));
+  camera->up.x /= norme;
+  camera->up.y /= norme;
+  camera->up.z /= norme;
+}
+
 void camFixePosition(camCamera * camera,
 		     float eyex, float eyey, float eyez,
 		     float centerx, float centery, float centerz,

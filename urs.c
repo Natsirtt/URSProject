@@ -17,6 +17,8 @@
 
 #define abs_val(a) (((a)>0)?(a):(-a))
 #define sign(a) (((a)>0)?(1):(-1))
+#define MAX_OF_MAX_SPEED 5000
+#define SPEED_COEFF 1.05
 
 keyBinder kb;
 camCamera camera;
@@ -27,7 +29,7 @@ planet_t autoPilotTarget;
 space_t spaceSphere;
 sun_t sun;
 ship_t ship;
-float maxSpeed;
+float maxSpeed = 5000;
 int autoPilot = 0;
 
 int continuer;
@@ -43,6 +45,9 @@ void decelerate();
 
 void handleSpeed() {
   if (skuIsPressed(&kb, SDLK_z)) {
+    if (getShipSpeed(&ship) < 1.) {
+      setShipSpeed(&ship, 1.);
+    }
     accelerate();
     if (getShipSpeed(&ship) > maxSpeed) {
       decelerate();
@@ -56,14 +61,14 @@ void handleSpeed() {
 void accelerate() {
   float shipSpeed = getShipSpeed(&ship);
   if (shipSpeed < maxSpeed) {
-    setShipSpeed(&ship, shipSpeed * 1.1);
+    setShipSpeed(&ship, shipSpeed * SPEED_COEFF);
   }
 }
 
 void decelerate() {
   float shipSpeed = getShipSpeed(&ship);
   if (shipSpeed > 0.) {
-    setShipSpeed(&ship, shipSpeed / 1.1);
+    setShipSpeed(&ship, shipSpeed / SPEED_COEFF);
   }
 }
 
@@ -71,18 +76,20 @@ void increaseSpeed() {
   if (maxSpeed == 0.) {
     maxSpeed = 1.;
   }
-  maxSpeed *= 1.1;
+  if (maxSpeed < MAX_OF_MAX_SPEED) {
+    maxSpeed *= SPEED_COEFF;
+  }
 }
 
 void decreaseSpeed() {
   if (maxSpeed <= 1.) {
     maxSpeed = 0.;
   }
-  maxSpeed /= 1.1;
+  maxSpeed /= SPEED_COEFF;
 }
 
 void camLookAtShip() {
-  camFixePositionWithoutUp(&camera, ship.x, ship.y, ship.z + 30, camera.forward.x, camera.forward.y, camera.forward.z);
+  camFixePositionWithoutUp(&camera, ship.x, ship.y, ship.z + 30, ship.x, ship.y, ship.z);
   camLookAt(&camera);
 }
 
@@ -134,7 +141,7 @@ void motion(SDL_MouseMotionEvent motion) {
   // Le WarpMouse(320, 320) génère également un évènement
   // motion qu'il ne faut pas prendre en compte.
   if (doMotion && (motion.x != 320 || motion.y != 320)) {
-//    camTourneEtLeve(&camera, motion.xrel, motion.yrel);
+    camFixePositionWithoutUpNorForward(&camera, camera.eye.x - motion.xrel, camera.eye.y, camera.eye.z - motion.yrel);
 //    camLookAt(&camera);
     SDL_WarpMouse(320, 320);
   } else {

@@ -218,11 +218,11 @@ void drawShip(ship_t *s) {
   //glDisable(GL_CULL_FACE);
   glPushMatrix();
   glTranslatef(s->x, s->y, s->z);
-  glRotatef(90, 0., 1., 0.);
-  glRotatef(90, -1., 0., 0.);
-  glRotatef(s->xRotation, 1., 0., 0.);
-  glRotatef(s->yRotation, 0., 1., 0.);
-  glRotatef(s->zRotation, 0., 0., 1.);
+  gu_yRotate(90.);
+  gu_xRotate(-90);
+  gu_xRotate(s->xRotation);
+  gu_yRotate(s->yRotation);
+  gu_zRotate(s->zRotation);
 
   GLfloat diff[4] = {.6, .6, .6, 1};
   GLfloat amb[4] = {.2, .2, .2, 1};
@@ -331,6 +331,5 @@ float getShipSpeed(ship_t *s) {
 }
 
 void shipLifeCycle(ship_t* s) {
-  s->x += s->speed;
-  printf("speed = %d\n", s->speed);
+  s->z -= s->speed;
 }
