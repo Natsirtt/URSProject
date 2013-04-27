@@ -78,11 +78,6 @@ void gu_init_GL(void) {
   glMatrixMode(GL_MODELVIEW);
 }
 
-void gu_frustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
-                GLdouble nearVal, GLdouble farVal) {
-  gu_frustum(left, right, bottom, top, nearVal, farVal);
-}
-
 void gu_init_display(void (*display)(void)) {
   displayFunction = display;
 }
