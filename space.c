@@ -21,8 +21,8 @@ void initSpace(space_t *s, float x, float y, float z, float rad,
 
 void drawSpace(space_t *s) {
   //Désactivation du depth tests et de l'écriture dans le depth buffer pour la skybox
-//  glDisable(GL_DEPTH_TEST);
-//  glDepthMask(GL_FALSE);
+  glDisable(GL_DEPTH_TEST);
+  glDepthMask(GL_FALSE);
   glDisable(GL_CULL_FACE);
   
   glPushMatrix();
@@ -57,8 +57,8 @@ void drawSpace(space_t *s) {
   //On indique qu'on remet la texture par défaut (rien)
   glBindTexture(GL_TEXTURE_2D, 0);
   //Réactivation du depth buffer
-//  glEnable(GL_DEPTH_TEST);
-//  glDepthMask(GL_TRUE);
+  glEnable(GL_DEPTH_TEST);
+  glDepthMask(GL_TRUE);
   glEnable(GL_CULL_FACE);
 }
 
